@@ -1,0 +1,27 @@
+#ifndef UPLOAD_MANAGER_H
+#define UPLOAD_MANAGER_H
+
+#include <Arduino.h>
+#include <functional>
+
+class UploadManager {
+public:
+    using ProgressCallback = std::function<void(size_t current, size_t total)>;
+    using CompleteCallback = std::function<void(bool success, const char* error)>;
+
+    static bool init();
+    static bool uploadFile(const char* localPath, 
+                          const char* filename,
+                          ProgressCallback onProgress,
+                          CompleteCallback onComplete);
+    static bool isUploading();
+    static void poll();  // Deliver worker progress/completion on the UI thread
+
+private:
+    static bool _uploading;
+    static bool transferFile(const char *localPath, const char *filename, const char *host,
+                             ProgressCallback onProgress, CompleteCallback onComplete);
+    static bool ensureDirectoryExists(const String& machineIP, const String& dirPath);
+};
+
+#endif // UPLOAD_MANAGER_H

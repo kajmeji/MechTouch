@@ -1,0 +1,140 @@
+# Changelog
+
+All notable changes to FluidTouch will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.5] - 2026-04-24
+
+### Added
+
+- **Probe / Limit Switch Indicators** - Real-time pin status indicators on Control tabs and Status tab
+  - Probe indicator on **Control → Probe** and on the Status tab
+  - Limit-switch indicators (per axis) on **Control → Actions** and on the Status tab
+  - Triggered indicators remain visible for 500ms so brief activations are easy to see
+- **Terminal History** - Terminal tab now retains command history; recall previous commands for re-sending
+- **FluidNC Version on About Tab** - Settings → About now displays the connected FluidNC controller's firmware version
+- **M7 + M8 Coolant Display** - Status tab correctly shows both flood (M8) and mist (M7) coolant when active simultaneously
+
+### Changed
+
+- **A-Axis Setting is Per-Machine** - A-axis enable/disable is now stored per machine instead of as a global setting, allowing mixed 3-axis and 4-axis machine configurations
+- **LVGL 9.5.0** - Updated UI library from 9.4.x to 9.5.0
+- **LovyanGFX 1.2.19** - Updated display driver
+- **ArduinoJson 7.4.3** - Updated JSON library
+- **ESP32 Platform Branch** - Switched to the `Arduino/IDF53_gcc15` branch of the Jason2866 ESP32 platform after the previous `Arduino/IDF53` branch was removed/renamed upstream
+
+### Fixed
+
+- **Build Compatibility** - Resolved build break caused by the LovyanGFX update
+
+## [1.0.4] - 2026-03-23
+
+### Added
+
+- **A-Axis Support** - Optional 4th-axis support for rotary and A-axis machines (#34)
+  - Enable/disable via **Settings → General → Enable A-Axis** (takes effect after restart)
+  - A-axis position display in status bar and Status tab (orange color)
+  - A-axis jog section in **Control → Jog** tab (mirrors Z-axis layout with its own step buttons)
+  - Z/A toggle on the right slider in **Control → Joystick** tab when A-axis is enabled
+  - **Zero A** button in **Control → Actions** when A-axis is enabled
+  - A-axis max feed rate and step size configuration in **Settings → Jog**
+- **Configurable Jog Steps** - Per-machine jog step button values now configurable in **Settings → Jog**
+  - XY, Z, and A-axis step lists are fully customizable (comma-separated values)
+  - Changes saved per machine
+
+### Fixed
+
+- **File List Out of Memory** - Resolved crash when browsing directories with large numbers of files (#35)
+- **Message Display Filtering** - Status bar and Status tab now only show informational and error messages, reducing noise from status report data
+- **Wakeup Touch Suppression** - First touch input after wake from deep sleep or display-off state no longer triggers unintended UI actions
+
+### Changed
+
+- **Serial Input Forwarding** - Commands entered in a serial terminal (e.g., Arduino IDE Serial Monitor at 115200 baud) are now forwarded to FluidNC for debugging convenience
+
+## [1.0.3] - 2026-02-10
+
+### Added
+
+- **Advance Hardware v1.2 Support** - Added support for Elecrow CrowPanel 7" Advance v1.2 displays (⚠️ untested) (#11)
+  - Note: v1.2 requires same DIP switch configuration as v1.3 (S0 and S1 both set to position 1)
+- **mDNS Hostname Resolution** - Connect to FluidNC by hostname (e.g., `fluidnc.local`) instead of IP address (#26)
+- **Upload Directory Auto-Creation** - Automatically creates upload directory if it doesn't exist when uploading files from Display SD
+- **Open Upload Folder Button** - Quick access button to open the uploaded files folder on FluidNC
+- **WCS Display Enhancements** - Improved Work Coordinate System labeling and lock status indicators
+
+### Fixed
+
+- **Display Flicker** - Eliminated screen flicker by migrating to ESP-IDF 5.3 and optimizing display timing parameters
+- **Basic Hardware Touch Response** - Improved touch sensitivity and reliability on Basic hardware variant (#21, #23)
+- **Probe After WCS Confirmation** - Fixed probe operations failing after confirming Work Coordinate System updates
+- **Web Installer Caching** - Prevented browser caching of versions.json to ensure latest version list is always displayed
+
+## [1.0.2] - 2026-01-24
+
+### Changed
+
+- **Status Tab Updates**
+  - **Pause/Resume and Stop Buttons** - Pause/Resume/Stop from status tab (#13)
+  - **Position Update on Status Tab** - Click positions on status tab to update (#14)
+  - **WCS Update on Status Tab** - Click work position values to update Work Coordinate System (#15)
+- **Settings Updates**
+  - **Display Rotation Support** - Can now rotate display 180 degrees via Settings → General (#12)
+- **Web Installer Version Selection** - Dropdown to select from multiple firmware versions including preview builds
+
+### Fixed
+
+- **File Upload with Spaces** - Fixed handling of filenames containing spaces in upload operations
+
+## [1.0.1] - 2025-12-04
+
+### Fixed
+
+- **Touch Screen Deep Sleep Bug** - Fixed touch screen not working after deep sleep wake on Basic hardware
+- **Boot Display Flash** - Fixed garbled screen flash on startup
+
+### Changed
+
+- **Documentation Updates** - Product links now use affiliate codes to help support development
+- **Hardware Recommendation** - Advance display model now marked as recommended (superior IPS display, optional battery case)
+
+## [1.0.0] - 2025-11-17
+
+### Initial Release
+
+FluidTouch 1.0.0 is the first stable release of the ESP32-S3 touchscreen CNC controller for FluidNC-based machines.
+
+#### Features
+
+- **Real-time Machine Control** - Monitor position, state, feed/spindle rates with live updates
+- **Multi-Machine Support** - Store and switch between up to 4 different CNC configurations
+- **Intuitive Jogging** - Button-based and analog joystick interfaces with configurable step sizes
+- **Touch Probe Operations** - Automated probing with customizable parameters
+- **Macro Support** - Configure and store up to 9 file-based macros per machine
+- **File Management** - Browse and manage files from FluidNC SD, FluidNC Flash, and Display SD card
+- **Settings Backup & Restore** - Export settings to JSON, auto-import on fresh install
+- **Power Management** - Configurable display dimming, sleep, and deep sleep modes
+- **WiFi Connectivity** - WebSocket connection to FluidNC with automatic status reporting
+- **Terminal** - Execute custom commands and view FluidNC messages
+
+#### Supported Hardware
+
+- Elecrow CrowPanel 7" Basic ESP32-S3 HMI Display (4MB Flash + 8MB PSRAM)
+- Elecrow CrowPanel 7" Advance ESP32-S3 HMI Display (16MB Flash + 8MB PSRAM)
+  - Hardware Version 1.3 only
+
+#### Documentation
+
+- Complete user interface guide with screenshots
+- Usage instructions and workflows
+- Configuration guide for WiFi, machines, and settings
+- Development guide for building from source
+
+[1.0.5]: https://github.com/jeyeager65/FluidTouch/releases/tag/v1.0.5
+[1.0.4]: https://github.com/jeyeager65/FluidTouch/releases/tag/v1.0.4
+[1.0.3]: https://github.com/jeyeager65/FluidTouch/releases/tag/v1.0.3
+[1.0.2]: https://github.com/jeyeager65/FluidTouch/releases/tag/v1.0.2
+[1.0.1]: https://github.com/jeyeager65/FluidTouch/releases/tag/v1.0.1
+[1.0.0]: https://github.com/jeyeager65/FluidTouch/releases/tag/v1.0.0
