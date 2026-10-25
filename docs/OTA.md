@@ -102,3 +102,15 @@ CI, 1.404 karakterin ölçülerini karşılaştırır ve LVGL'nin gerçek çöz�
 piksellerin aynı kaldığını denetler. Açılış görseli de aynı yöntemle kayıpsız RLE
 sıkıştırılmıştır. Kullanılmayan hedef çizim biçimleri kapatılmış; RGB565 ekran,
 alfa katmanları ve tek renkli çizim desteği korunmuştur.
+
+## GitHub yönlendirme tamponu düzeltmesi
+
+İlk OTA uygulamasında ESP-IDF'nin varsayılan 512 bayt gönderim tamponu,
+GitHub'ın imzalı indirme adreslerine yetmiyordu (`HTTP_CLIENT: Out of buffer`).
+Hem sürüm kontrolü hem firmware indirmesi artık 4096 bayt gönderim tamponu kullanır.
+Seri monitörde `[OTA-HTTP]` satırları yönlendirme adımını, HTTP durumunu ve uzunlukları
+gösterir; imzalı adresin kendisi yazdırılmaz. Bağlantı hataları ekranda hata koduyla görünür.
+
+Eski istemci düzeltmeyi indiremeyeceği için bu hatayı alan panel bir kez daha USB ile
+yüklenmelidir. Düzeltilmiş yerel 1.0.6 derlemesi, GitHub Actions tarafından etiketten
+1.0.7 olarak derlenen düzeltme sürümüne kablosuz geçişi denemek için kullanılabilir.

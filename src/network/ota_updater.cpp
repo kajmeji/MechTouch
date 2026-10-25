@@ -36,6 +36,7 @@ std::atomic<bool> permitted{false};
 String version, url, digest;
 size_t firmwareSize = 0;
 char errorText[160] = {};
+char downloadError[160] = {};
 lv_obj_t *overlay = nullptr, *message = nullptr, *bar = nullptr, *install = nullptr, *closeButton = nullptr;
 bool automaticChecked = false;
 uint32_t restartAt = 0, pollAt = 0;
@@ -62,24 +63,46 @@ esp_err_t redirectEvent(esp_http_client_event_t *e) {
 }
 // Follow only HTTPS redirects to GitHub asset hosts; authenticate every TLS connection.
 esp_http_client_handle_t openDownload(String target, int &length) {
+    snprintf(downloadError, sizeof(downloadError), "Update redirect limit or untrusted download host.");
     for (int i = 0; i < 5 && trusted(target); ++i) {
         String location;
         esp_http_client_config_t cfg = {};
         cfg.url = target.c_str(); cfg.cert_pem = otaRootCertificates;
+        // GitHub signed asset URLs exceed ESP-IDF's default 512-byte TX buffer.
+        // The request line (including its query string) must fit in one buffer.
+        cfg.buffer_size_tx = 4096;
         cfg.timeout_ms = 12000; cfg.disable_auto_redirect = true;
         cfg.event_handler = redirectEvent; cfg.user_data = &location;
         auto h = esp_http_client_init(&cfg);
-        if (!h) return nullptr;
+        if (!h) {
+            snprintf(downloadError, sizeof(downloadError), "Not enough memory for HTTPS update request.");
+            return nullptr;
+        }
         esp_http_client_set_header(h, "User-Agent", "MechTouch/" FLUIDTOUCH_VERSION);
         esp_http_client_set_header(h, "Accept-Encoding", "identity");
-        if (esp_http_client_open(h, 0) != ESP_OK) { esp_http_client_cleanup(h); return nullptr; }
+        esp_err_t result = esp_http_client_open(h, 0);
+        if (result != ESP_OK) {
+            int tlsError = 0, tlsFlags = 0;
+            esp_http_client_get_and_clear_last_tls_error(h, &tlsError, &tlsFlags);
+            Serial.printf("[OTA-HTTP] hop=%d url_bytes=%u open=%s tls=0x%x flags=0x%x heap=%u\n",
+                          i, static_cast<unsigned>(target.length()), esp_err_to_name(result),
+                          tlsError, tlsFlags, ESP.getFreeHeap());
+            snprintf(downloadError, sizeof(downloadError), "HTTPS request failed: %s. See Serial Monitor.", esp_err_to_name(result));
+            esp_http_client_cleanup(h); return nullptr;
+        }
         length = esp_http_client_fetch_headers(h);
         int status = esp_http_client_get_status_code(h);
+        Serial.printf("[OTA-HTTP] hop=%d url_bytes=%u status=%d length=%d redirect_bytes=%u\n",
+                      i, static_cast<unsigned>(target.length()), status, length,
+                      static_cast<unsigned>(location.length()));
         // No event callback may retain the stack-local redirect destination.
         esp_http_client_set_user_data(h, nullptr);
         if (status == 200 && length > 0) return h;
         esp_http_client_cleanup(h);
-        if (status < 300 || status >= 400 || location.isEmpty()) return nullptr;
+        if (status < 300 || status >= 400 || location.isEmpty()) {
+            snprintf(downloadError, sizeof(downloadError), "Update server: HTTP %d, length %d. See Serial Monitor.", status, length);
+            return nullptr;
+        }
         target = location;
     }
     return nullptr;
@@ -98,7 +121,7 @@ void checkWorker(void *) {
     if (!clockReady()) { fail("Cannot sync clock. Check internet access."); vTaskDelete(nullptr); return; }
     int length = 0;
     auto h = openDownload(String(base) + "latest/download/ota-" + board + ".json", length);
-    if (!h) { fail("Release unavailable. Check internet and public GitHub release."); vTaskDelete(nullptr); return; }
+    if (!h) { fail(downloadError); vTaskDelete(nullptr); return; }
     char data[2049]; int got = 0;
     if (length <= 2048) {
         while (got < length) {
@@ -133,7 +156,8 @@ void installWorker(void *) {
     }
     int length = 0;
     auto h = openDownload(url, length);
-    if (!h || length != static_cast<int>(firmwareSize)) {
+    if (!h) { fail(downloadError); vTaskDelete(nullptr); return; }
+    if (length != static_cast<int>(firmwareSize)) {
         if (h) esp_http_client_cleanup(h);
         fail("Firmware download failed or size mismatch."); vTaskDelete(nullptr); return;
     }
