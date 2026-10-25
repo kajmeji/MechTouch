@@ -181,14 +181,14 @@
      * - bitmaps with transparency may use ARGB8888
      */
     #define LV_DRAW_SW_SUPPORT_RGB565       1
-    #define LV_DRAW_SW_SUPPORT_RGB565_SWAPPED       1
+    #define LV_DRAW_SW_SUPPORT_RGB565_SWAPPED       0
     #define LV_DRAW_SW_SUPPORT_RGB565A8     1
-    #define LV_DRAW_SW_SUPPORT_RGB888       1
-    #define LV_DRAW_SW_SUPPORT_XRGB8888     1
+    #define LV_DRAW_SW_SUPPORT_RGB888       0
+    #define LV_DRAW_SW_SUPPORT_XRGB8888     0
     #define LV_DRAW_SW_SUPPORT_ARGB8888     1
     #define LV_DRAW_SW_SUPPORT_ARGB8888_PREMULTIPLIED 1
-    #define LV_DRAW_SW_SUPPORT_L8           1
-    #define LV_DRAW_SW_SUPPORT_AL88         1
+    #define LV_DRAW_SW_SUPPORT_L8           0
+    #define LV_DRAW_SW_SUPPORT_AL88         0
     #define LV_DRAW_SW_SUPPORT_A8           1
     #define LV_DRAW_SW_SUPPORT_I1           1
 
@@ -592,17 +592,17 @@
  * https://fonts.google.com/specimen/Montserrat */
 #define LV_FONT_MONTSERRAT_8  0  // Disabled: Not used in UI
 #define LV_FONT_MONTSERRAT_10 0  // Disabled: Not used in UI
-#define LV_FONT_MONTSERRAT_12 1  // Used: Status tab file progress labels
-#define LV_FONT_MONTSERRAT_14 1  // Used: Jog controls, step labels, status labels
-#define LV_FONT_MONTSERRAT_16 1  // Used: Files tab, settings, probe results, dialogs
-#define LV_FONT_MONTSERRAT_18 1  // Used: Tab headers, status bar, common UI, settings
-#define LV_FONT_MONTSERRAT_20 1  // Used: Main tabs, probe buttons, status values, keyboards
-#define LV_FONT_MONTSERRAT_22 1  // Used: Machine select, dialogs, state popups
-#define LV_FONT_MONTSERRAT_24 1  // Used: State popup messages, empty state messages
-#define LV_FONT_MONTSERRAT_26 1  // Used: Machine select connection label
+#define LV_FONT_MONTSERRAT_12 0  // Used: Status tab file progress labels
+#define LV_FONT_MONTSERRAT_14 0  // Used: Jog controls, step labels, status labels
+#define LV_FONT_MONTSERRAT_16 0  // Used: Files tab, settings, probe results, dialogs
+#define LV_FONT_MONTSERRAT_18 0  // Used: Tab headers, status bar, common UI, settings
+#define LV_FONT_MONTSERRAT_20 0  // Used: Main tabs, probe buttons, status values, keyboards
+#define LV_FONT_MONTSERRAT_22 0  // Used: Machine select, dialogs, state popups
+#define LV_FONT_MONTSERRAT_24 0  // Used: State popup messages, empty state messages
+#define LV_FONT_MONTSERRAT_26 0  // Used: Machine select connection label
 #define LV_FONT_MONTSERRAT_28 0  // Disabled: Not used in UI
 #define LV_FONT_MONTSERRAT_30 0  // Disabled: Not used in UI
-#define LV_FONT_MONTSERRAT_32 1  // Used: Page titles, state labels, large value displays
+#define LV_FONT_MONTSERRAT_32 0  // Used: Page titles, state labels, large value displays
 #define LV_FONT_MONTSERRAT_34 0  // Disabled: Not used in UI
 #define LV_FONT_MONTSERRAT_36 0  // Disabled: Not used in UI
 #define LV_FONT_MONTSERRAT_38 0
@@ -633,7 +633,7 @@
  *  #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)
  *  @endcode
  */
-#define LV_FONT_CUSTOM_DECLARE
+#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(lv_font_montserrat_12) LV_FONT_DECLARE(lv_font_montserrat_14) LV_FONT_DECLARE(lv_font_montserrat_16) LV_FONT_DECLARE(lv_font_montserrat_18) LV_FONT_DECLARE(lv_font_montserrat_20) LV_FONT_DECLARE(lv_font_montserrat_22) LV_FONT_DECLARE(lv_font_montserrat_24) LV_FONT_DECLARE(lv_font_montserrat_26) LV_FONT_DECLARE(lv_font_montserrat_32)
 
 /** Always set a default font */
 #define LV_FONT_DEFAULT &lv_font_montserrat_14
@@ -938,10 +938,10 @@
 
 
 /** Decode bin images to RAM */
-#define LV_BIN_DECODER_RAM_LOAD 0
+#define LV_BIN_DECODER_RAM_LOAD 1
 
 /** RLE decompress library */
-#define LV_USE_RLE 0
+#define LV_USE_RLE 1
 
 /** QR code library */
 #define LV_USE_QRCODE 1  // Enabled: Used in About tab for GitHub and screenshot server URLs

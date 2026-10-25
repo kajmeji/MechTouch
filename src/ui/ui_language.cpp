@@ -601,66 +601,48 @@ LV_FONT_DECLARE(tr_32);
 LV_FONT_DECLARE(tr_48);
 }
 const lv_font_t *UILanguage::font(const lv_font_t *base) {
-#if LV_FONT_MONTSERRAT_12
     if (base == &lv_font_montserrat_12) {
         static lv_font_t copy = lv_font_montserrat_12;
         copy.fallback = &tr_12; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_14
     if (base == &lv_font_montserrat_14) {
         static lv_font_t copy = lv_font_montserrat_14;
         copy.fallback = &tr_14; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_16
     if (base == &lv_font_montserrat_16) {
         static lv_font_t copy = lv_font_montserrat_16;
         copy.fallback = &tr_16; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_18
     if (base == &lv_font_montserrat_18) {
         static lv_font_t copy = lv_font_montserrat_18;
         copy.fallback = &tr_18; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_20
     if (base == &lv_font_montserrat_20) {
         static lv_font_t copy = lv_font_montserrat_20;
         copy.fallback = &tr_20; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_22
     if (base == &lv_font_montserrat_22) {
         static lv_font_t copy = lv_font_montserrat_22;
         copy.fallback = &tr_22; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_24
     if (base == &lv_font_montserrat_24) {
         static lv_font_t copy = lv_font_montserrat_24;
         copy.fallback = &tr_24; return &copy;
     }
-#endif
-#if LV_FONT_MONTSERRAT_26
     if (base == &lv_font_montserrat_26) {
         static lv_font_t copy = lv_font_montserrat_26;
         copy.fallback = &tr_26; return &copy;
     }
-#endif
 #if LV_FONT_MONTSERRAT_28
     if (base == &lv_font_montserrat_28) {
         static lv_font_t copy = lv_font_montserrat_28;
         copy.fallback = &tr_28; return &copy;
     }
 #endif
-#if LV_FONT_MONTSERRAT_32
     if (base == &lv_font_montserrat_32) {
         static lv_font_t copy = lv_font_montserrat_32;
         copy.fallback = &tr_32; return &copy;
     }
-#endif
 #if LV_FONT_MONTSERRAT_48
     if (base == &lv_font_montserrat_48) {
         static lv_font_t copy = lv_font_montserrat_48;

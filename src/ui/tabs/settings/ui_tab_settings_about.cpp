@@ -4,6 +4,7 @@
 #include "network/screenshot_server.h"
 #include "network/fluidnc_client.h"
 #include <WiFi.h>
+#include "network/ota_updater.h"
 
 // Static member initialization
 lv_obj_t *UITabSettingsAbout::screenshot_link_label = nullptr;
@@ -73,7 +74,7 @@ void UITabSettingsAbout::create(lv_obj_t *tab) {
     
     // GitHub link
     lv_obj_t *github_link = lv_label_create(github_column);
-    lv_label_set_text(github_link, "Repository not configured");
+    lv_label_set_text(github_link, "kajmeji/MechTouch");
     lv_obj_set_style_text_font(github_link, &lv_font_montserrat_16, 0);
     lv_obj_set_style_text_color(github_link, UITheme::UI_INFO, 0);
     lv_obj_set_style_text_align(github_link, LV_TEXT_ALIGN_CENTER, 0);
@@ -84,6 +85,11 @@ void UITabSettingsAbout::create(lv_obj_t *tab) {
     lv_qrcode_set_dark_color(github_qr, lv_color_white());
     lv_qrcode_set_light_color(github_qr, UITheme::BG_MEDIUM);
     lv_obj_add_flag(github_qr, LV_OBJ_FLAG_HIDDEN);
+    auto *update_button = lv_button_create(github_column);
+    auto *update_label = lv_label_create(update_button);
+    lv_label_set_text(update_label, "Check for updates");
+    lv_obj_center(update_label);
+    lv_obj_add_event_cb(update_button, [](lv_event_t *) { OTAUpdater::check(); }, LV_EVENT_CLICKED, nullptr);
     
     // Right column: Screenshot Server
     lv_obj_t *screenshot_column = lv_obj_create(columns_container);

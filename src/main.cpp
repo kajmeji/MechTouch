@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <Preferences.h>
 #include <esp_ota_ops.h>
+#include "network/ota_updater.h"
 #include "core/display_driver.h"     // Display driver module
 #include "core/touch_driver.h"       // Touch driver module
 #include "core/power_manager.h"      // Power management module
@@ -40,7 +41,7 @@ void setup()
     const esp_partition_t *otaData = esp_partition_find_first(
         ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_OTA, nullptr);
     const bool hasNextSlot = running && next && running->address != next->address;
-    Serial.printf("[OTA-CHECK] flash=%lu app=%lu running=%lu next=%lu otadata=%u\\n",
+    Serial.printf("[OTA-CHECK] flash=%lu app=%lu running=%lu next=%lu otadata=%u\n",
         (unsigned long)ESP.getFlashChipSize(), (unsigned long)ESP.getSketchSize(),
         (unsigned long)(running ? running->size : 0),
         (unsigned long)(hasNextSlot ? next->size : 0), otaData ? 1U : 0U);
@@ -216,6 +217,7 @@ void loop()
     }
     
     // Check for connection timeout (non-blocking)
+    OTAUpdater::loop();
     UICommon::checkConnectionTimeout();
     
     // Check for pending file list refresh (from Files tab delete callback)

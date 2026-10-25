@@ -1,4 +1,5 @@
 #include "network/fluidnc_client.h"
+#include "network/ota_updater.h"
 #include "ui/ui_common.h"
 #include "ui/tabs/control/ui_tab_control_probe.h"
 #include <WiFi.h>
@@ -182,6 +183,13 @@ void FluidNCClient::clearLastMessage() {
 }
 
 void FluidNCClient::sendCommand(const char* command) {
+    // Prevent queued UI/serial motion during OTA; retain status and emergency hold/reset.
+    if (OTAUpdater::installing()) {
+        bool realtime = command && (*command == '?' || *command == '!' || *command == '\x18');
+        if (realtime) for (const char *p = command + 1; *p; ++p)
+            if (*p != '\r' && *p != '\n') realtime = false;
+        if (!realtime) return;
+    }
     if (!currentStatus.is_connected) {
         Serial.println("[FluidNC] Error: Not connected");
         return;

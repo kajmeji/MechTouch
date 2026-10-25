@@ -137,3 +137,7 @@ web/versions.json
 webui/
 # Host regression test binaries
 /tests/host/*.exe
+
+# Generated OTA release assets (published by the release workflow)
+/dist/ota/
+/dist/usb/
